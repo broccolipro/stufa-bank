@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>Stufa</title>
+<style>
+  :root { color-scheme: light dark; --bg: #f6f5f1; --fg: #1c1c1a; --muted: #6b6a65; --accent: #1f5a43; --line: #dddbd3; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #151614; --fg: #ecebe6; --muted: #9a9993; --accent: #6fc3a0; --line: #2c2d2a; } }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.5 -apple-system, system-ui, sans-serif; }
+  main { max-width: 620px; margin: 0 auto; padding: 48px 16px; }
+  h1 { font-size: 28px; margin: 0 0 8px; }
+  h2 { font-size: 19px; margin: 36px 0 8px; padding-top: 20px; border-top: 1px solid var(--line); }
+  p { margin: 0 0 12px; }
+  .muted { color: var(--muted); }
+  #return { display: none; }
+  .returning #return { display: block; }
+  .returning #about { display: none; }
+  a.button { display: inline-block; margin-top: 12px; padding: 12px 20px; border-radius: 10px; background: var(--accent); color: var(--bg); text-decoration: none; font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+  <section id="return">
+    <h1>Returning to Stufa…</h1>
+    <p class="muted">If the app does not open by itself, tap the button.</p>
+    <a class="button" id="open" href="stufa://bank">Open Stufa</a>
+  </section>
+
+  <section id="about">
+    <h1>Stufa</h1>
+    <p class="muted">A private, non-commercial app used only by its owner. This page brings the owner back to the app after signing in at a bank.</p>
+
+    <h2 id="privacy">Privacy</h2>
+    <p>Stufa has a single user: its owner. Through Enable Banking it reads the owner's own account balances and transactions.</p>
+    <p>This data is stored only on the owner's device. It is not shared with anyone, not sold, and not used for advertising. There is no server and no analytics.</p>
+    <p>This page stores nothing. It only passes the one-time sign-in result to the app on the same device.</p>
+
+    <h2 id="terms">Terms</h2>
+    <p>Stufa is not offered to the public. It is used by its owner for personal bookkeeping, at the owner's own risk, with no warranty of any kind.</p>
+  </section>
+</main>
+<script>
+  // Bank sign-in ends here with ?code=…&state=… (or ?error=…). Hand the same query to the app and leave no trace in history.
+  (function () {
+    var query = window.location.search;
+    var params = new URLSearchParams(query);
+    if (!params.has('code') && !params.has('error')) return;
+    var target = 'stufa://bank' + query;
+    document.body.className = 'returning';
+    document.getElementById('open').href = target;
+    try { window.history.replaceState(null, '', window.location.pathname); } catch (e) {}
+    window.location.replace(target);
+  })();
+</script>
+</body>
+</html>
